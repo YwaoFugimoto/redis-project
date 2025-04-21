@@ -1,5 +1,5 @@
-const { Socket } = require('dgram');
 const net = require('net');
+const logger = require('./logger')("server");
 
 const server = net.createServer();
 const port = 6379;
@@ -18,6 +18,6 @@ server.on("connection", (Socket) => {
 });
 
 server.listen(port, host, () => {
-    console.log(`Server running at ${host} : ${port}`);
-    
+    logger.log(`Server running at ${host} : ${port}`);
+
 });
