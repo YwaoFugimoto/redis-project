@@ -1,0 +1,21 @@
+{
+  "name": "redis-project",
+  "version": "1.0.0",
+  "main": "logger.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YwaoFugimoto/redis-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YwaoFugimoto/redis-project/issues"
+  },
+  "homepage": "https://github.com/YwaoFugimoto/redis-project#readme",
+  "description": ""
+}
