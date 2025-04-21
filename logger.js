@@ -4,7 +4,14 @@ const logger = (namespace) => {
     const log = (mode, message) => {
         const logMessage = `${new Date().toISOString()} ${mode} [${namespace}] : ${message}`;
 
-        console[mode](logMessage);
+        if( mode === "error") {
+            console.error(logMessage);
+            return;
+        }
+        
+        if(debugNamespaces.includes("*") || debugNamespaces.includes(namespace)) {
+            console[mode](logMessage);
+        }
     };
 
     return {
