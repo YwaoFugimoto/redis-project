@@ -1,7 +1,8 @@
 
-<h1 align="center">
-  Redis-js&nbsp;<img src="image/redis1.png" alt="logo" width="40" style="vertical-align:middle;"/>
+<h1 style="text-align: center;">
+  Redis‑js&nbsp;<img src="redis1.png" alt="logo" width="40" style="vertical-align: middle;" />
 </h1>
+
 
 A lightweight, in-memory key-value data store, implemented in JavaScript for educational and prototyping purposes.
 
