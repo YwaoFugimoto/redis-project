@@ -1,6 +1,6 @@
 <h1 align="center">
   Redis‑js
-  <img src="image/redis1.png" alt="logo" width="40" align="middle" /> 
+  <img src="image/redis1.png" alt="logo" width="40"/> 
 </h1>
 
 
