@@ -1,6 +1,7 @@
 const net = require("net");
 const assert = require("node:assert");
 const {before, after, test} = require("node:test");
+const { buildRedisCommand } = require("./utils");
 
 let redisClient;
 
@@ -37,7 +38,7 @@ const sendCommand = (command) => {
             return;
         };
 
-        redisClient.write(command);
+        redisClient.write(buildRedisCommand(command));
 
         redisClient.once("data", (data) => {
             resolve(data.toString());
@@ -49,9 +50,10 @@ const sendCommand = (command) => {
 };
 
 test("should SET and GET a value", async () => {
-    const setResponse = await sendCommand("set foor bar");
-    assert.strictEqual(setResponse, "+OK/r/n");
-
+    const setResponse = await sendCommand("set foo bar");
+    assert.strictEqual(setResponse, "+OK\r\n");
+  
     const getResponse = await sendCommand("get foo");
-    assert.strictEqual(getResponse, "$3/r/nbar/r/n");
-})
+    assert.strictEqual(getResponse, "$3\r\nbar\r\n");
+  });
+
