@@ -3,9 +3,9 @@ const logger = require("./logger")("core");
 const store = {};
 const expirationTime = {};
 
-const isExpired = (key) => {
+const isExpired = (key) => 
     expirationTime[key] && expirationTime[key] < Date.now();
-}
+
 
 const checkExpiry = (key) => {
     if(isExpired(key)) {
@@ -59,6 +59,21 @@ const commandHandlers = {
         } else {
             return ":0\r\n";
         }
+    },
+    EXPIRE: (args) => {
+        if (args.length < 2) {
+            return "-ERR wrong number of arguments for 'expire' command\r\n";
+        }
+
+        const [key, seconds] = args;
+
+        if (!store[key]){
+            return ":0\r\n";   
+        }
+
+        expirationTime[key] = Date.now() + seconds * 1000;
+
+        return ":1\r\n";
     },
     COMMAND: () => "+OK\r\n",
 };
