@@ -44,6 +44,22 @@ const commandHandlers = {
 
         return `$${value.length}\r\n${value}\r\n`;
     },
+    DEL: (args) => {
+        if (args.length < 1) {
+            return "-ERR wrong number os commands for 'DEL' command\r\n";
+        }
+        
+        const [key] = args;
+
+        if (store[key]) {
+            delete store[key];
+            delete expirationTime[key];
+
+            return ":1\r\n";
+        } else {
+            return ":0\r\n";
+        }
+    },
     COMMAND: () => "+OK\r\n",
 };
 
