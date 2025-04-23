@@ -2,6 +2,7 @@ const net = require("net");
 const assert = require("node:assert");
 const {before, after, test} = require("node:test");
 const { buildRedisCommand } = require("./utils");
+const { send } = require("process");
 
 let redisClient;
 
@@ -56,4 +57,34 @@ test("should SET and GET a value", async () => {
     const getResponse = await sendCommand("get foo");
     assert.strictEqual(getResponse, "$3\r\nbar\r\n");
   });
+
+test("should return $-1 for a non-existent key", async () => {
+    const getResponse = await sendCommand("get tool");
+    assert.strictEqual(getResponse, "$-1\r\n" );
+});
+
+test("should delete a key", async() => {
+    await sendCommand("set del bar");
+    const delResponse = await sendCommand("del del");
+    assert.strictEqual(delResponse, ":1\r\n");
+
+    const getResponse = await sendCommand("get del");
+    assert.strictEqual(getResponse, "$-1\r\n");
+});
+
+test("should expire a key", async() => {
+    await sendCommand("set expfoo expbar");
+    const expResponse = await sendCommand("expire expfoo 1");
+    assert.strictEqual(expResponse, ":1\r\n");
+
+    await new Promise((resolve) => setTimeout(resolve, 1100));
+
+    const getResponse = await sendCommand("get expfoo");
+    assert.strictEqual(getResponse, "$-1\r\n");
+});
+
+test("should handle unknown commands successfully", async () => {
+    const unkResponse = await sendCommand("UNKNOWN foo");
+    assert.strictEqual(unkResponse, "-ERR unknow command\r\n");
+});
 
