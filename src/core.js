@@ -114,6 +114,28 @@ const commandHandlers = {
 
         return `:${value + 1}\r\n`;
     },
+    DECR: (args) => {
+        if (args.length < 1) {
+            return "-ERR wrong number of arguments for 'decr' command\r\n";
+        }
+
+        const [key] = args;
+
+        if (!store[key]) { 
+            store[key] = { type: "String", value: "-1" };
+
+            return ":-1\r\n";
+        }
+
+        const value = parseInt(store[key].value, 10);
+
+        if (isNaN(value))
+            return "-ERR value is not an integer or out of range\r\n";
+        
+        store[key].value = (value - 1).toString();
+
+        return `:${value - 1}\r\n`;
+    },
     COMMAND: () => "+OK\r\n",
 };
 
