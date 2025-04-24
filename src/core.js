@@ -1,4 +1,4 @@
-const logger = require("./logger")("core");
+const logger = require("../../logger")("core");
 
 const store = {};
 const expirationTime = {};
