@@ -19,6 +19,10 @@ const checkExpiry = (key) => {
 }
 
 const commandHandlers = {
+    FLUSHALL: () => {
+        delete store;
+        delete expirationTime;
+    },
     SET: (args) => {
         if(args.length < 2){
             return "-ERR wrong number of arguments for 'SET' command\r\n";
@@ -178,6 +182,53 @@ const commandHandlers = {
         store[key].value.unshift(...values);
 
         return `:${store[key].value.length}\r\n`;
+    },
+    RPUSH: (args) => {
+        if (args.length < 2) {
+            return "-ERR wrong number of arguments for 'rpush' command\r\n";
+        };
+
+        const [key, ...values] = args;        
+
+        if (!store[key]) {
+            store[key] = { type: "list", value: [] };
+        };
+
+        if (store[key].type !== "list"){
+            return "-ERR wrong type of key\r\n";
+        };
+
+        store[key].value.push(...values);
+
+        return `:${store[key].value.length}\r\n`;
+    },
+    LPOP: (args) => {
+        if (args.length < 1) {
+            return "-ERR wrong number of arguments for 'lpop' command\r\n";
+        };
+
+        const [key] = args;
+
+        if (checkExpiry(key) || !store[key] || store[key].type !== "list" || store[key].value.length === 0)
+            return "$-1\r\n";
+
+        const value = store[key].value.shift();
+
+        return `$${value.length}\r\n${value}\r\n`;
+    },
+    RPOP: (args) => {
+        if (args.length < 1) {
+            return "-ERR wrong number of arguments for 'rpop' command\r\n";
+        };
+
+        const [key] = args;
+
+        if (checkExpiry(key) || !store[key] || store[key].type !== "list" || store[key].value.length === 0)
+            return "$-1\r\n";
+
+        const value = store[key].value.pop();
+
+        return `$${value.length}\r\n${value}\r\n`;
     },
     COMMAND: () => "+OK\r\n",
 };
