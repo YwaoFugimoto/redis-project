@@ -1,5 +1,5 @@
 const net = require('net');
-const { parseCommand, executeCommand, commandHandlers } = require('./core');
+const { init, parseCommand, executeCommand, commandHandlers } = require('./core');
 const logger = require('./utils/logger')("server");
 
 const server = net.createServer();
@@ -13,7 +13,7 @@ server.on("connection", (socket) => {
             const { command, args } = parseCommand(data);
             response = executeCommand(command, args);
         } catch (err) {
-            logger.log(err);
+            logger.info(err);
             response = "-ERR unknown command\r\n";
         }
 
@@ -26,7 +26,6 @@ server.on("connection", (socket) => {
 });
 
 server.listen(port, host, () => {
-    // init();
-
-    logger.log(`Server running at ${host} : ${port}`);
+    init();
+    logger.info(`Server running at ${host} : ${port}`);
 });
