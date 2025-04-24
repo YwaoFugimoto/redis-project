@@ -88,3 +88,36 @@ test("should handle unknown commands successfully", async () => {
     assert.strictEqual(unkResponse, "-ERR unknow command\r\n");
 });
 
+test("should return correct TTL for a key and error cases", async() => {
+    await sendCommand("set fooexp expt");
+    const expireResponse = await sendCommand("expire fooexp 5");
+    assert.strictEqual(expireResponse, ":1\r\n");
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    const getResponse = await sendCommand("ttl fooexp");
+    const match = getResponse.match(/^:(\d+)\r\n$/);
+    const ttlValue = parseInt(match[1]);
+
+    assert.ok(ttlValue <= 3, "Expexted ttlValue to be less than or equal to 3");
+
+    const errorResponse = await sendCommand("ttl");
+    assert.strictEqual(errorResponse, "-ERR wrong number of arguments for 'ttl' command\r\n");
+});
+
+test("should INCR a key and error cases", async() => {
+    await sendCommand("set fooinc 5");
+
+    const response1 = await sendCommand("incr fooinc");
+    assert.strictEqual(response1, ":6\r\n");
+
+    const getResponse = await sendCommand("get fooinc");
+    assert.strictEqual(getResponse, "$1\r\n6\r\n");
+
+    const response2 = await sendCommand("incr");
+    assert.strictEqual(response2, "-ERR wrong number of arguments for 'incr' command\r\n");
+
+    await sendCommand("set fooString bar1");
+    const getError = await sendCommand("incr fooString");
+    assert.strictEqual(getError, "-ERR value is not an integer or out of range\r\n");
+});
