@@ -111,13 +111,36 @@ test("should INCR a key and error cases", async() => {
     const response1 = await sendCommand("incr fooinc");
     assert.strictEqual(response1, ":6\r\n");
 
+    const response2 = await sendCommand("incr fooNew");
+    assert.strictEqual(response2, ":1\r\n");
+
     const getResponse = await sendCommand("get fooinc");
     assert.strictEqual(getResponse, "$1\r\n6\r\n");
 
-    const response2 = await sendCommand("incr");
-    assert.strictEqual(response2, "-ERR wrong number of arguments for 'incr' command\r\n");
+    const response3 = await sendCommand("incr");
+    assert.strictEqual(response3, "-ERR wrong number of arguments for 'incr' command\r\n");
 
     await sendCommand("set fooString bar1");
     const getError = await sendCommand("incr fooString");
+    assert.strictEqual(getError, "-ERR value is not an integer or out of range\r\n");
+});
+
+test("should DECR a key and error cases", async() => {
+    await sendCommand("set foodecr 11");
+
+    const response1 = await sendCommand("decr foodecr");
+    assert.strictEqual(response1, ":10\r\n");
+
+    const response2 = await sendCommand("decr fooNewDecr");
+    assert.strictEqual(response2, ":-1\r\n");
+
+    const getResponse = await sendCommand("get foodecr");
+    assert.strictEqual(getResponse, "$2\r\n10\r\n");
+
+    const response3 = await sendCommand("decr");
+    assert.strictEqual(response3, "-ERR wrong number of arguments for 'decr' command\r\n");
+
+    await sendCommand("set fooString2 bar2");
+    const getError = await sendCommand("decr fooString2");
     assert.strictEqual(getError, "-ERR value is not an integer or out of range\r\n");
 });
