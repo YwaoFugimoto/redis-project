@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "logger.js",
   "scripts": {
-    "test": "node tests/server.test.js",
+    "test": "node test/server.test.js",
     "start": "node --watch src/server.js"
   },
   "repository": {
