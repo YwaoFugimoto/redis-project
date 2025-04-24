@@ -1,7 +1,7 @@
 const logger = require("./utils/logger")("core");
-
-const store = {};
-const expirationTime = {};
+const config = require("./config.json");
+const persistence = require("./persistence");
+const { store, expirationTime } = persistence;
 
 const isExpired = (key) => 
     expirationTime[key] && expirationTime[key] < Date.now();
@@ -234,7 +234,7 @@ const commandHandlers = {
 };
 
 const executeCommand = (command, args) => {
-    logger.log(`Recieve ${command} ${args}`);
+    logger.info(`Recieve ${command} ${args}`);
 
     const handler = commandHandlers[command];
 
@@ -254,8 +254,21 @@ const parseCommand = (data) => {
     return { command, args };
 };
 
+const init = () => {
+    if (config.snapshot) {
+        logger.info("Persistence mode: 'snapshot'");
+        persistence.loadSnapshotSync();
+
+        setInterval(async () => {
+            await persistence.saveSnapshot();
+        }, config.snapshotInterval);
+    } else {
+        logger.info("Persistence mode: 'in-memory'");
+    }
+}
 
 module.exports = {
+    init,
     parseCommand,
     executeCommand,
     commandHandlers
