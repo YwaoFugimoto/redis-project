@@ -1,6 +1,6 @@
 const net = require('net');
 const { parseCommand, executeCommand, commandHandlers } = require('./core');
-const logger = require('./logger')("server");
+const logger = require('./utils/logger')("server");
 
 const server = net.createServer();
 const port = 6379;
