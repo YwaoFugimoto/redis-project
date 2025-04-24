@@ -56,7 +56,7 @@ test("should SET and GET a value", async () => {
   
     const getResponse = await sendCommand("get foo");
     assert.strictEqual(getResponse, "$3\r\nbar\r\n");
-  });
+});
 
 test("should return $-1 for a non-existent key", async () => {
     const getResponse = await sendCommand("get tool");
@@ -143,4 +143,28 @@ test("should DECR a key and error cases", async() => {
     await sendCommand("set fooString2 bar2");
     const getError = await sendCommand("decr fooString2");
     assert.strictEqual(getError, "-ERR value is not an integer or out of range\r\n");
+});
+
+test("should return error for LRANGE invalid key", async() => {
+    const getError1 = await sendCommand("lrange list1");
+    assert.strictEqual(getError1, "-ERR wrong number of arguments for 'lrange' command\r\n");
+
+    const getError2 = await sendCommand("lrange list1 0 4");
+    assert.strictEqual(getError2, "$-1\r\n");
+});
+
+test("should LPUSH for a key, error cases and LRANGE", async() => {
+    const getResponse1 = await sendCommand("lpush list2 elm1");
+    assert.strictEqual(getResponse1, ":1\r\n");
+
+    const getResponse2 = await sendCommand("lrange list2 0 0");
+    assert.strictEqual(getResponse2, "*1\r\n$4\r\nelm1\r\n");
+
+    const getError1 = await sendCommand("lpush list2");
+    assert.strictEqual(getError1, "-ERR wrong number of arguments for 'lpush' command\r\n");
+
+    await sendCommand("set notList 2")
+    const getError2 = await sendCommand("lpush notList one");
+    assert.strictEqual(getError2, "-ERR wrong type of key\r\n");
+
 });
