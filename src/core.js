@@ -234,8 +234,10 @@ const commandHandlers = {
 };
 
 const executeCommand = (command, args, replayingFromAOF = false) => {
-    logger.info(`Recieve ${command} ${args} ${replayingFromAOF || 'AOF'}`);
-
+    // logger.info(`Recieve ${command} ${args} ${replayingFromAOF || 'AOF'}`);
+    if (!(command === "COMMAND" && args[0] === "DOCS")) {
+        logger.info(`Receive ${command} ${args} ${replayingFromAOF || 'AOF'}`);
+    }
     const handler = commandHandlers[command];
 
     if(!handler) {
