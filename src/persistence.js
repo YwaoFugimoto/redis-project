@@ -22,7 +22,7 @@ class Persistence {
         
         try {
             await fsp.writeFile(this.DATA_FILE, data);
-            logger.info(`Saves datastore to file: ${this.DATA_FILE}`);
+            logger.info(`Saves datastore to file: data.rdb`);
         } catch (error) {
             logger.error(`Failed to save datastore: ${error.message}`);
         };
@@ -41,7 +41,7 @@ class Persistence {
                 Object.assign(this.store, loadedStore);
                 Object.assign(this.expirationTime, loadedExpirationTime);
 
-                logger.info("Datarstore loaded successfully");                 
+                logger.info("Datastore loaded successfully");                 
             };
         } catch (error) {
             logger.error(`Failed to load datastore: ${error.message}`);
@@ -76,7 +76,7 @@ class Persistence {
                 executeCommand(commnad, args, true);
             };
 
-            logger.info("Replay AOF started");
+            logger.info("Replay AOF finished");
         } catch (error) {
             logger.error(`Failed to replay AOF: ${error.message}`);
         };
