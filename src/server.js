@@ -7,6 +7,8 @@ const port = 6379;
 const host = "127.0.0.1";
 
 server.on("connection", (socket) => {
+    logger.info("User connected");
+
     socket.on("data", (data) => {
         let response;
         try{
